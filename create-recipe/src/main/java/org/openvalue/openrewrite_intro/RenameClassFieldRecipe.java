@@ -69,5 +69,24 @@ public class RenameClassFieldRecipe
    private class RenameFieldVisitor
       extends JavaIsoVisitor< ExecutionContext >
    {
+      @Override
+      public J.VariableDeclarations.NamedVariable visitVariable(
+         final J.VariableDeclarations.NamedVariable variable, final ExecutionContext executionContext )
+      {
+         final Cursor declaringScope = variable.getDeclaringScope( getCursor() );
+         final Object parent = declaringScope.getParentOrThrow().getValue();
+
+         // if variable is not direct child of Class, it is not a field variable
+         if( !( parent instanceof J.ClassDeclaration ) ) {
+            return variable;
+         }
+
+         // check if name matches
+         if( variable.getName().getSimpleName().equals( before ) ) {
+            return variable.withName( variable.getName().withSimpleName( after ) );
+         }
+
+         return variable;
+      }
    }
 }
