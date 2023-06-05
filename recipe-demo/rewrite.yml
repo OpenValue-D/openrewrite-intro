@@ -1,0 +1,7 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openvalue.AddLicenseHeaderExample
+displayName: Add license header example
+recipeList:
+  - org.openrewrite.java.AddLicenseHeader:
+      licenseText: Copyright 2010-${CURRENT_YEAR} [...Your companies copyright text...]
