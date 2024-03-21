@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:1.19.0"))
+    implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:2.8.1"))
 
     implementation("org.openrewrite:rewrite-java")
 
