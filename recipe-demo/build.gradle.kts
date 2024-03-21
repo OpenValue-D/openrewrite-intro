@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.openrewrite.rewrite") version("5.40.4")
+    id("org.openrewrite.rewrite") version("6.10.1")
 }
 
 group = "org.openvalue.openrewrite-intro"

@@ -1,6 +1,7 @@
 package org.openvalue.openrewrite_intro;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.jetbrains.annotations.NotNull;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
@@ -19,28 +20,28 @@ public class PrintLTSRecipe
    }
 
    @Override
-   public String getDisplayName()
+   public @NotNull String getDisplayName()
    {
       return "PrintLTS";
    }
 
    @Override
-   public String getDescription()
+   public @NotNull String getDescription()
    {
       return "Make use of TreeVisitingPrinter.";
    }
 
    @Override
-   protected TreeVisitor< ?, ExecutionContext > getVisitor()
+   public @NotNull TreeVisitor< ?, ExecutionContext > getVisitor()
    {
       return new PrintLTS();
    }
 
-   public class PrintLTS
+   public static class PrintLTS
       extends JavaIsoVisitor< ExecutionContext >
    {
       @Override
-      public J.ClassDeclaration visitClassDeclaration( J.ClassDeclaration classDecl, ExecutionContext executionContext )
+      public J.@NotNull ClassDeclaration visitClassDeclaration( J.@NotNull ClassDeclaration classDecl, @NotNull ExecutionContext executionContext )
       {
          System.out.println( TreeVisitingPrinter.printTree( getCursor() ) );
          return classDecl;
