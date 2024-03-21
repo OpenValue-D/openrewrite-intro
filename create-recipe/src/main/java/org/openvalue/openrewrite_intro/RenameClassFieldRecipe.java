@@ -7,6 +7,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.JavaIsoVisitor;
+import org.openrewrite.java.tree.J;
 
 import java.util.Objects;
 
@@ -70,23 +71,26 @@ public class RenameClassFieldRecipe
       extends JavaIsoVisitor< ExecutionContext >
    {
       @Override
-      public J.VariableDeclarations.NamedVariable visitVariable(
-         final J.VariableDeclarations.NamedVariable variable, final ExecutionContext executionContext )
+      public J.VariableDeclarations.@NotNull NamedVariable visitVariable(
+         final J.VariableDeclarations.NamedVariable variable, final @NotNull ExecutionContext executionContext )
       {
-         final Cursor declaringScope = variable.getDeclaringScope( getCursor() );
-         final Object parent = declaringScope.getParentOrThrow().getValue();
-
-         // if variable is not direct child of Class, it is not a field variable
-         if( !( parent instanceof J.ClassDeclaration ) ) {
-            return variable;
+         if( !variable.isField( getCursor() ) ) {
+            return super.visitVariable( variable, executionContext );
          }
 
-         // check if name matches
-         if( variable.getName().getSimpleName().equals( before ) ) {
-            return variable.withName( variable.getName().withSimpleName( after ) );
+         final J.Identifier identifier = variable.getName();
+
+         if( !Objects.equals( before, identifier.getSimpleName() ) ) {
+            return super.visitVariable( variable, executionContext );
          }
 
-         return variable;
+         final J.Identifier myChangedSimpleName =
+            identifier.withSimpleName( after ).withFieldType( identifier.getFieldType().withName( after ) );
+         final J.VariableDeclarations.NamedVariable myChangedVariable =
+            variable.withName( myChangedSimpleName ).withVariableType( variable.getVariableType().withName( after ) );
+
+         return super.visitVariable( myChangedVariable, executionContext );
       }
+
    }
 }
